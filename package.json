@@ -1,0 +1,19 @@
+{
+  "name": "themarker",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "canary",
+    "nodemon": "^2.0.22"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@stricjs/arrow": "^2.0.5"
+  },
+  "scripts": {
+    "dev": "nodemon index.ts",
+    "prod": "NODE_ENV=production bun index.ts"
+  }
+}

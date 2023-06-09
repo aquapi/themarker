@@ -1,0 +1,12 @@
+# Packages
+/node_modules
+/bun.lockb
+/yarn.lock
+/package-lock.json
+
+# Outdir
+/src/out
+
+# Private
+/.env
+/src/apis/data/users.json
