@@ -13,6 +13,7 @@
     "@stricjs/arrow": "^2.0.6"
   },
   "scripts": {
+    "compile": "g++ -o ./src/marker/judge ./src/marker/src/index.cc",
     "dev": "nodemon index.ts",
     "prod": "NODE_ENV=production bun index.ts"
   }

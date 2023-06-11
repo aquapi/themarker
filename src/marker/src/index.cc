@@ -5,6 +5,9 @@
 #include <cstdlib>
 #include <filesystem>
 
+const std::string binaryFile = "./index",
+    outputFile = "./output.txt";
+
 bool compareFiles(const std::string& file1, const std::string& file2) {
     std::ifstream f1(file1);
     std::ifstream f2(file2);
@@ -24,12 +27,23 @@ bool compileCode(const std::string& codeFile) {
     return (compilationResult == 0);
 }
 
-int calculateScore(int totalTests, int passedTests, int totalPoints) {
-    return (static_cast<double>(passedTests) / totalTests) * totalPoints;
-}
-
 void deleteFile(const std::string& filePath) {
     std::filesystem::remove(filePath);
+}
+
+int extractTotalScore(const std::string& testPath) {
+    std::string propertiesPath = testPath + "/properties.txt";
+    std::ifstream propertiesFile(propertiesPath);
+    int totalScore = 0;
+
+    if (propertiesFile.is_open()) {
+        std::string line;
+        if (std::getline(propertiesFile, line)) {
+            totalScore = std::stoi(line);
+        }
+    }
+
+    return totalScore;
 }
 
 int main(int argc, char* argv[]) {
@@ -45,21 +59,16 @@ int main(int argc, char* argv[]) {
     // Compile the C++ code
     if (!compileCode(codeFile)) {
         std::cout << "Compilation Error" << std::endl;
-
-        // Log the compilation error
-        std::ofstream errorLog("compilation_error.log");
-        errorLog << "Compilation Error" << std::endl;
-        errorLog.close();
-
         return 1;
     }
 
-    // Iterate over test files in the directory
+    // Iterate over test directories in the directory
     std::filesystem::directory_iterator testsIterator(testsDirectory);
     std::filesystem::directory_iterator endIterator;
 
-    int passedTests = 0;
+    int currentPoints = 0;
     int totalTests = 0;
+    int totalPoints = 0;
 
     for (; testsIterator != endIterator; ++testsIterator) {
         if (std::filesystem::is_directory(testsIterator->path())) {
@@ -69,31 +78,32 @@ int main(int argc, char* argv[]) {
             std::string inputPath = testPath + "/input.txt";
             std::string expectedOutputPath = testPath + "/expected.txt";
 
+            // Extract the total score from the properties file
+            int testTotalScore = extractTotalScore(testPath);
+            totalPoints += testTotalScore;
+
             // Run the compiled code and redirect output to a file
-            std::system(("./index < " + inputPath + " > ./out.txt").c_str());
+            int result = std::system((binaryFile + " < " + inputPath + " > " + outputFile).c_str());
 
             // Compare the output with the expected output
-            if (compareFiles("./out.txt", expectedOutputPath)) {
+            if (result == 0 && compareFiles(outputFile.c_str(), expectedOutputPath)) {
                 std::cout << "Test " << testName << ": Passed" << std::endl;
-                ++passedTests;
-            } else {
+                currentPoints += testTotalScore;
+            } else 
                 std::cout << "Test " << testName << ": Failed" << std::endl;
-            }
 
             ++totalTests;
 
             // Delete the output file
-            deleteFile("./out.txt");
+            deleteFile(outputFile);
         }
     }
 
     // Calculate the total score
-    int totalPoints = totalTests;
-    int score = calculateScore(totalTests, passedTests, totalPoints);
-    std::cout << "Total Score: " << score << " out of " << totalPoints << std::endl;
+    std::cout << "Total Score: " << currentPoints << " out of " << totalPoints << std::endl;
 
     // Delete the binary file
-    deleteFile("./index");
+    deleteFile(binaryFile);
 
     return 0;
 }

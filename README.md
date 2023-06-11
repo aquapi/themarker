@@ -8,3 +8,5 @@ Add `bun` executable to `$PATH` and install required dependencies:
 ```bash
 bun install
 ``` 
+
+This only works for Linux. You need WSL to use this on Windows.

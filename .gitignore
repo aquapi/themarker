@@ -10,3 +10,6 @@
 # Private
 /.env
 /src/apis/data/users.json
+
+# Binary
+/src/marker/judge
