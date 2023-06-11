@@ -24,7 +24,7 @@ export function render() {
             alert('Log in successfully, press OK to continue...');
             location.href = '/';
         } catch (e) {
-            alert('Invalid username or password');
+            alert('Invalid username or password!');
         }
     }
 

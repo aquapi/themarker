@@ -10,7 +10,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@stricjs/arrow": "^2.0.5"
+    "@stricjs/arrow": "^2.0.6"
   },
   "scripts": {
     "dev": "nodemon index.ts",
